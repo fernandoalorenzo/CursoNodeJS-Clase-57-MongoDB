@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { MdOutlineAddBox } from "react-icons/md";
 import LibrosTable from "../components/home/LibrosTable";
 import { useSnackbar } from "notistack";
 
@@ -22,16 +21,26 @@ const Home = () => {
         enqueueSnackbar("Error", { variant: "error" });
       });
   }, []);
+
   return (
-    <div className="p-4">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl my-8">Listado de Libros</h1>
-        <Link to="/libros/create">
-          <MdOutlineAddBox className="text-sky-800 text-4xl" />
-        </Link>
-      </div>
-        <LibrosTable libros={libros} />
-    </div>
+		<>
+      <div className="container container-fluid w-75">
+        <div className="row">
+          
+          <h1 className="text-center">CRUD de Libros</h1>
+        </div>
+        <div className="d-flex justify-content-end mb-3">
+          <Link
+            className="btn btn-primary align-self-end"
+            to="/libros/create">
+            <i className="fa-regular fa-square-plus"></i>
+          </Link>
+        </div>
+        <div className="row">
+          <LibrosTable libros={libros} />
+        </div>
+			</div>
+		</>
   );
 };
 

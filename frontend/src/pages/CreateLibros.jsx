@@ -1,46 +1,42 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
 import BackButton from "../components/BackButton";
-import Spinner from "../components/Spinner";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 
 const CreateLibros = () => {
-  const [titulo, setTitulo] = useState("");
-  const [autor, setAutor] = useState("");
-  const [genero, setGenero] = useState("");
-  const [publicacion, setPublicacion] = useState("");
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
-  const handleSaveLibro = () => {
-    const data = {
-      titulo,
-      autor,
-      genero,
-      publicacion,
-    };
-    setLoading(true);
-    axios
-      .post("http://localhost:5000/libros", data)
-      .then(() => {
-        setLoading(false);
-        enqueueSnackbar("Operación realizada exitosamente!", { variant: "success" });
-        navigate("/");
-      })
-      .catch((error) => {
-        setLoading(false);
-        enqueueSnackbar("Error", { variant: "error" });
-        console.log(error);
-      });
-  };
+	const [titulo, setTitulo] = useState("");
+	const [autor, setAutor] = useState("");
+	const [genero, setGenero] = useState("");
+	const [publicacion, setPublicacion] = useState("");
+	const navigate = useNavigate();
+	const { enqueueSnackbar } = useSnackbar();
+	const handleSaveLibro = () => {
+		const data = {
+			titulo,
+			autor,
+			genero,
+			publicacion,
+		};
+		axios
+			.post("http://localhost:5000/libros", data)
+			.then(() => {
+				enqueueSnackbar("Operación realizada exitosamente!", {
+					variant: "success",
+				});
+				navigate("/");
+			})
+			.catch((error) => {
+				enqueueSnackbar("Error", { variant: "error" });
+				console.log(error);
+			});
+	};
 
-  return (
+	return (
 		<div className="p-4">
 			<BackButton />
 			<h1 className="text-3xl my-4">Agregar Libro</h1>
-			{loading ? <Spinner /> : ""}
 			<div className="flex flex-col border-2 border-sky-400 rounded-xl w-[600px] p-4 mx-auto">
 				<div className="my-4">
 					<label className="text-xl mr-4 text-gray-500">Título</label>
@@ -87,7 +83,7 @@ const CreateLibros = () => {
 				</button>
 			</div>
 		</div>
-  );
+	);
 };
 
 export default CreateLibros;
