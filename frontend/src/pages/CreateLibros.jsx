@@ -16,8 +16,14 @@ const handleGuardarLibro = () => {
 		titulo,
 		autor,
 		genero,
-		publicacion,
+		publicacion
 	};
+
+	if (data.publicacion) {
+		data.publicacion = data.publicacion.substring(0, 10);
+	} else {
+		data.publicacion = "";
+	}
 
 	fetch("http://localhost:5000/libros", {
 		method: "POST",
@@ -43,7 +49,6 @@ const handleGuardarLibro = () => {
 		console.error("Error:", error);
 	});
 };
-
 
 	return (
 		<>
@@ -89,11 +94,11 @@ const handleGuardarLibro = () => {
 					</div>
 					<div className="col-6">
 						<label className="form-label">
-							Año de Publicación
+							Fecha de Publicación
 						</label>
 						<input
 							className="form-control"
-							type="text"
+							type="date"
 							value={publicacion}
 							onChange={(e) => setPublicacion(e.target.value)}
 						/>

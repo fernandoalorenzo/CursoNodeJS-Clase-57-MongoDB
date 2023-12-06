@@ -13,22 +13,32 @@ const EditLibro = () => {
 	const { id } = useParams();
 	const { enqueueSnackbar } = useSnackbar();
 
-const fetchLibros = async () => {
-	try {
-		const response = await fetch(`http://localhost:5000/libros/${id}`);
-		if (!response.ok) {
-			throw new Error("Ha ocurrido un error en la solicitud.");
+	const fetchLibros = async () => {
+		try {
+			const response = await fetch(`http://localhost:5000/libros/${id}`);
+			if (!response.ok) {
+				throw new Error("Ha ocurrido un error en la solicitud.");
+			}
+			const data = await response.json();
+			setTitulo(data.titulo);
+			setAutor(data.autor);
+			setGenero(data.genero);
+			if (data.publicacion) {
+				data.publicacion =
+					data.publicacion.substr(8, 2) +
+					"/" +
+					data.publicacion.substr(5, 2) +
+					"/" +
+					data.publicacion.substr(0, 4);
+			} else {
+				data.publicacion = "";
+			}
+			setPublicacion(data.publicacion);
+		} catch (error) {
+			alert("Ha ocurrido un error. Verifique la consola.");
+			console.error(error);
 		}
-		const data = await response.json();
-		setTitulo(data.titulo);
-		setAutor(data.autor);
-		setGenero(data.genero);
-		setPublicacion(data.publicacion);
-	} catch (error) {
-		alert("Ha ocurrido un error. Verifique la consola.");
-		console.error(error);
-	}
-};
+	};
 
 	useEffect(() => {
 		fetchLibros();
@@ -42,6 +52,13 @@ const fetchLibros = async () => {
 			publicacion,
 		};
 
+		if (data.publicacion) {
+			const parts = data.publicacion.split("/");
+			data.publicacion = parts[2] + "-" + parts[1] + "-" + parts[0];
+		} else {
+			data.publicacion = "";
+		}
+
 		fetch(`http://localhost:5000/libros/${id}`, {
 			method: "PUT",
 			headers: {
@@ -49,22 +66,22 @@ const fetchLibros = async () => {
 			},
 			body: JSON.stringify(data),
 		})
-		.then((response) => {
-			if (!response.ok) {
-				throw new Error("Hubo un error en la petición.");
-			}
-			return response.json();
-		})
-		.then(() => {
-			enqueueSnackbar("Operación realizada exitosamente!", {
-				variant: "success",
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error("Hubo un error en la petición.");
+				}
+				return response.json();
+			})
+			.then(() => {
+				enqueueSnackbar("Operación realizada exitosamente!", {
+					variant: "success",
+				});
+				navigate("/");
+			})
+			.catch((error) => {
+				enqueueSnackbar("Error", { variant: "error" });
+				console.log(error);
 			});
-			navigate("/");
-		})
-		.catch((error) => {
-			enqueueSnackbar("Error", { variant: "error" });
-			console.log(error);
-		})
 	};
 
 	return (
@@ -113,7 +130,7 @@ const fetchLibros = async () => {
 				</div>
 				<div className="col-6">
 					<label htmlFor="name" className="form-label">
-						Año de Publicación
+						Fecha de Publicación
 					</label>
 					<input
 						className="form-control"
@@ -122,22 +139,20 @@ const fetchLibros = async () => {
 						value={publicacion}
 						onChange={(e) => setPublicacion(e.target.value)}
 					/>
-        </div>
-      </div>
-      <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-        <button
-          className="btn btn-primary"
-          onClick={handleEditarLibro}>
-          Guardar
-        </button>
-        <button
-          type="button"
-          className="btn btn-danger"
-          onClick={() => navigate("/")}>
-          <i className="fa-solid fa-ban px-2"></i>
-          Cancelar
-        </button>
-      </div>
+				</div>
+			</div>
+			<div className="d-grid gap-2 d-md-flex justify-content-md-end">
+				<button className="btn btn-primary" onClick={handleEditarLibro}>
+					Guardar
+				</button>
+				<button
+					type="button"
+					className="btn btn-danger"
+					onClick={() => navigate("/")}>
+					<i className="fa-solid fa-ban px-2"></i>
+					Cancelar
+				</button>
+			</div>
 		</div>
 	);
 };

@@ -1,7 +1,7 @@
 import express, { request, response } from "express";
 import { PORT, mongoDBURL } from "./config.js";
 import mongoose from "mongoose";
-import { Libro } from "./models/libroModelo.js";
+import { Libro } from "./models/libroModel.js";
 import librosRoute from "./routes/librosRoute.js";
 import cors from "cors";
 

@@ -1,5 +1,5 @@
 import express from "express";
-import { Libro } from "../models/libroModelo.js";
+import { Libro } from "../models/libroModel.js";
 
 const router = express.Router();
 
@@ -64,8 +64,8 @@ router.put("/:id", async (request, response) => {
 	try {
 		if (
 			!request.body.titulo ||
-      !request.body.autor ||
-      !request.body.genero ||
+			!request.body.autor ||
+			!request.body.genero ||
 			!request.body.publicacion
 		) {
 			return response.status(400).send({
@@ -78,7 +78,9 @@ router.put("/:id", async (request, response) => {
 		const result = await Libro.findByIdAndUpdate(id, request.body);
 
 		if (!result) {
-			return response.status(404).json({ message: "El libro no fue encontrado!" });
+			return response
+				.status(404)
+				.json({ message: "El libro no fue encontrado!" });
 		}
 		return response
 			.status(200)
