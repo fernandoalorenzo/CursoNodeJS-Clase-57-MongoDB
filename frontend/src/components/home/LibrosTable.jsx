@@ -11,29 +11,25 @@ const LibrosTable = ({ libros }) => {
             <th scope="col">Título</th>
             <th scope="col">Autor</th>
             <th scope="col">Género</th>
-            <th scope="col">Fecha de Publicación</th>
+            <th scope="col">Año</th>
             <th scope="col">Acciones</th>
           </tr>
         </thead>
         <tbody>
           {libros.map((libro, index) => (
             <tr key={libro._id}>
-              <td className="text-start">{index + 1}</td>
-              <td className="text-start">
+              <td className="text-start align-middle text-center col-lg-1">{index + 1}</td>
+              <td className="text-start col-lg-3">
                 {libro.titulo}
               </td>
-              <td>{libro.autor}</td>
-              <td className="text-start">
+              <td className="text-start col-lg-3">{libro.autor}</td>
+              <td className="text-start col-lg-2">
                 {libro.genero}
               </td>
-              <td className="text-start">
+              <td className="align-middle text-center col-lg-1">
                 {libro.publicacion}
               </td>
               <td>
-                {/* <Link
-                  className="btn btn-success mx-2"
-                  to={`/libros/details/${libro._id}`}>
-                </Link> */}
                 <Link
                   className="btn btn-warning mx-2"
                   to={`/libros/edit/${libro._id}`}>

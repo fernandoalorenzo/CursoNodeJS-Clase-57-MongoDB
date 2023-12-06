@@ -1,6 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSnackbar } from "notistack";
 
@@ -9,47 +9,68 @@ const EditLibro = () => {
 	const [autor, setAutor] = useState("");
 	const [genero, setGenero] = useState("");
 	const [publicacion, setPublicacion] = useState("");
-		const navigate = useNavigate();
+	const navigate = useNavigate();
 	const { id } = useParams();
 	const { enqueueSnackbar } = useSnackbar();
+
+const fetchLibros = async () => {
+	try {
+		const response = await fetch(`http://localhost:5000/libros/${id}`);
+		if (!response.ok) {
+			throw new Error("Ha ocurrido un error en la solicitud.");
+		}
+		const data = await response.json();
+		setTitulo(data.titulo);
+		setAutor(data.autor);
+		setGenero(data.genero);
+		setPublicacion(data.publicacion);
+	} catch (error) {
+		alert("Ha ocurrido un error. Verifique la consola.");
+		console.error(error);
+	}
+};
+
 	useEffect(() => {
-		axios
-			.get(`http://localhost:5000/libros/${id}`)
-			.then((response) => {
-				setTitulo(response.data.titulo);
-				setAutor(response.data.autor);
-				setGenero(response.data.genero);
-				setPublicacion(response.data.publicacion);
-			})
-			.catch((error) => {
-				alert("Ha ocurrido un error. Verifique la consola.");
-				console.log(error);
-			});
+		fetchLibros();
 	}, [id]);
-	const handleEditLibro = () => {
+
+	const handleEditarLibro = () => {
 		const data = {
 			titulo,
 			autor,
 			genero,
 			publicacion,
 		};
-		axios
-			.put(`http://localhost:5000/libros/${id}`, data)
-			.then(() => {
-				enqueueSnackbar("Libro modificado", { variant: "success" });
-				navigate("/");
-			})
-			.catch((error) => {
-				// alert("An error happened, Please check console!");
-				enqueueSnackbar("Error", { variant: "error" });
-				console.log(error);
+
+		fetch(`http://localhost:5000/libros/${id}`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(data),
+		})
+		.then((response) => {
+			if (!response.ok) {
+				throw new Error("Hubo un error en la petición.");
+			}
+			return response.json();
+		})
+		.then(() => {
+			enqueueSnackbar("Operación realizada exitosamente!", {
+				variant: "success",
 			});
+			navigate("/");
+		})
+		.catch((error) => {
+			enqueueSnackbar("Error", { variant: "error" });
+			console.log(error);
+		})
 	};
 
 	return (
 		<div className="container w-50">
 			<div className="row">
-				<h1 className="text-center">Editar Usuario</h1>
+				<h1 className="text-center">Editar Libro</h1>
 			</div>
 			<div className="row g-2 my-3">
 				<div className="col-6">
@@ -106,7 +127,7 @@ const EditLibro = () => {
       <div className="d-grid gap-2 d-md-flex justify-content-md-end">
         <button
           className="btn btn-primary"
-          onClick={handleEditLibro}>
+          onClick={handleEditarLibro}>
           Guardar
         </button>
         <button

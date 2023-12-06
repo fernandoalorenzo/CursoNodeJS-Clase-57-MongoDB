@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 // eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import LibrosTable from "../components/home/LibrosTable";
 import { useSnackbar } from "notistack";
@@ -10,16 +9,22 @@ const Home = () => {
   const [libros, setLibros] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
 
+  const fetchLibros = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/libros");
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      setLibros(data.data);
+    } catch (error) {
+      console.error(error);
+      enqueueSnackbar("Error", { variant: "error" });
+    }
+  }
+
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/libros")
-      .then((response) => {
-        setLibros(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-        enqueueSnackbar("Error", { variant: "error" });
-      });
+    fetchLibros();
   }, []);
 
   return (
